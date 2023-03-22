@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Senhas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        function copiarParaAreaDeTransferencia() {
+            const senhaElemento = document.getElementById('senha');
+            navigator.clipboard.writeText(senhaElemento.textContent).then(() => {
+                alert('Senha copiada para a área de transferência!');
+            }, (err) => {
+                alert('Não foi possível copiar a senha: ' + err);
+            });
+        }
+
+        function toggleUsuarios() {
+            const listaUsuariosContainer = document.getElementById('lista-usuarios-container');
+            listaUsuariosContainer.classList.toggle('hidden');
+        }
+        function buscarUltimasSenhas() {
+            fetch('/api/senhas')
+                .then((response) => response.json())
+                .then((senhas) => {
+                    const listaSenhas = document.getElementById('lista-senhas');
+                    listaSenhas.innerHTML = '';
+
+                    senhas.forEach((senha) => {
+                        const li = document.createElement('li');
+                        li.textContent = `Senha: ${senha.senha}`;
+                        listaSenhas.appendChild(li);
+                    });
+                });
+        }
+
+    </script>
+</head>
+<body>
+    <div class="container">
+        <img src="{{ url_for('static', filename='linuxtips-logo.png') }}" alt="Logo LINUXtips">
+        <h1>Gerador de Senhas</h1>
+        <div class="row">
+          <div class="column">
+            <form action="/" method="post">
+                <label for="tamanho">Tamanho da senha:</label>
+                <input type="number" id="tamanho" name="tamanho" min="1" value="8">
+                <input type="checkbox" id="incluir_numeros" name="incluir_numeros" checked>
+                <label for="incluir_numeros">Incluir números</label><br>
+                <input type="checkbox" id="incluir_caracteres_especiais" name="incluir_caracteres_especiais" checked>
+                <label for="incluir_caracteres_especiais">Incluir caracteres especiais</label><br><br>
+                <input type="submit" value="Gerar senha">
+            </form>
+            {% if senha %}
+                <p><strong>Senha gerada:</strong> <span id="senha">{{ senha }}</span></p>
+                <button onclick="copiarParaAreaDeTransferencia()">Copiar senha</button>
+            {% endif %}
+          </div>
+        </div>
+    </div>
+    <div class="column">
+        <h2>Últimas senhas criadas</h2>
+        <button id="buscar-senhas" type="button" onclick="buscarUltimasSenhas()">Buscar últimas senhas</button>
+        <div id="lista-senhas-container" class="lista-senhas-container">
+            <ul id="lista-senhas"></ul>
+        </div>
+    </div>
+</body>
+</html>
