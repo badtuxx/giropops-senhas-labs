@@ -10,9 +10,9 @@ RUN pip install --prefix="/reqs" -r requirements.txt
 
 FROM base
 WORKDIR /usr/src/app
+VOLUME /usr/src/app/scripts
 COPY --from=builder /reqs /usr/local
-COPY locustfile.py .
-ENTRYPOINT locust 
+ENTRYPOINT locust
 
 
 

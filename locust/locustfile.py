@@ -11,5 +11,3 @@ class Giropops(HttpUser):
     @task(2)
     def listar_senha(self):
         self.client.get("/api/senhas")
-
-

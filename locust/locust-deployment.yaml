@@ -17,6 +17,17 @@ spec:
       containers:
       - image: linuxtips/locust-giropops:1.0
         name: locust-giropops
+        env:
+          - name:  LOCUST_LOCUSTFILE
+            value: "/usr/src/app/scripts/locustfile.py"
         ports:
         - containerPort: 8089
         imagePullPolicy: Always
+        volumeMounts:
+        - name: locust-scripts
+          mountPath: /usr/src/app/scripts
+      volumes:
+      - name: locust-scripts
+        configMap:
+          name: locust-scripts
+          optional: true
