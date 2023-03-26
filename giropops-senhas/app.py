@@ -2,10 +2,11 @@ from flask import Flask, render_template, request, jsonify
 import redis
 import string
 import random
+import os
 
 app = Flask(__name__)
 
-redis_host = "redis-service"
+redis_host = os.environ.get('REDIS_HOST', 'redis-service')
 redis_port = 6379
 redis_password = ""
 
