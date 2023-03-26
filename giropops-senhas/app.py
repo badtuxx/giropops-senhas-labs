@@ -35,7 +35,10 @@ def index():
 
         r.lpush("senhas", senha)
 
-        return render_template('index.html', senha=senha)
+    senhas = r.lrange("senhas", 0, 9)
+    if senhas:
+        senhas_geradas = [{"id": index + 1, "senha": senha} for index, senha in enumerate(senhas)]
+        return render_template('index.html', senhas_geradas=senhas_geradas, senha=senhas_geradas[0]['senha'] or '' )
     return render_template('index.html')
 
 
