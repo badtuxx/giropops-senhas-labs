@@ -1,69 +1,91 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Senhas</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <script>
-        function copiarParaAreaDeTransferencia() {
-            const senhaElemento = document.getElementById('senha');
-            navigator.clipboard.writeText(senhaElemento.textContent).then(() => {
-                alert('Senha copiada para a área de transferência!');
-            }, (err) => {
-                alert('Não foi possível copiar a senha: ' + err);
-            });
-        }
-
-        function toggleUsuarios() {
-            const listaUsuariosContainer = document.getElementById('lista-usuarios-container');
-            listaUsuariosContainer.classList.toggle('hidden');
-        }
-        function buscarUltimasSenhas() {
-            fetch('/api/senhas')
-                .then((response) => response.json())
-                .then((senhas) => {
-                    const listaSenhas = document.getElementById('lista-senhas');
-                    listaSenhas.innerHTML = '';
-
-                    senhas.forEach((senha) => {
-                        const li = document.createElement('li');
-                        li.textContent = `Senha: ${senha.senha}`;
-                        listaSenhas.appendChild(li);
-                    });
-                });
-        }
-
-    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gerador de Senhas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet" />
 </head>
+
 <body>
-    <div class="container">
-        <img src="{{ url_for('static', filename='linuxtips-logo.png') }}" alt="Logo LINUXtips">
-        <h1>Gerador de Senhas</h1>
-        <div class="row">
-          <div class="column">
-            <form action="/" method="post">
-                <label for="tamanho">Tamanho da senha:</label>
-                <input type="number" id="tamanho" name="tamanho" min="1" value="8">
-                <input type="checkbox" id="incluir_numeros" name="incluir_numeros" checked>
-                <label for="incluir_numeros">Incluir números</label><br>
-                <input type="checkbox" id="incluir_caracteres_especiais" name="incluir_caracteres_especiais" checked>
-                <label for="incluir_caracteres_especiais">Incluir caracteres especiais</label><br><br>
-                <input type="submit" value="Gerar senha">
-            </form>
-            {% if senha %}
-                <p><strong>Senha gerada:</strong> <span id="senha">{{ senha }}</span></p>
-                <button onclick="copiarParaAreaDeTransferencia()">Copiar senha</button>
-            {% endif %}
+  <header class="flex justify-center h-24 bg-emerald-200 z-10 shadow-lg fixed top-0 w-full">
+    <nav class="flex items-center w-full max-w-4xl whitespace-nowrap">
+      <a href="/">
+        <img class="w-40 mr-10" src="{{ url_for('static', filename='linuxtips-logo.png') }}" alt="Logo LINUXtips" />
+      </a>
+      <h1 class="text-emerald-600 font-bold text-4xl ml-auto mr-16">
+        Gerador de Senhas
+      </h1>
+    </nav>
+  </header>
+  <main class="mt-40">
+    <section class="max-w-3xl ml-auto mr-auto">
+      <div class="flex flex-col items-center bg-slate-50 rounded-lg pb-8 shadow w-full">
+        <div class="bg-emerald-700 w-full rounded-t-lg flex justify-center items-center h-16">
+          <h2 class="font-bold text-2xl text-white">Gerar senha</h2>
+        </div>
+        <form class="mt-10 flex flex-col items-center" action="/" method="post">
+          <fieldset class="flex justify-between w-full mb-4">
+            <label for="tamanho" class="text-lg mr-8">Tamanho da senha:</label>
+            <input type="range" id="tamanho" name="tamanho" min="8" max="32" value="8" oninput="result.value=value" />
+            <output id="result" for="tamanho" class="ml-4 text-center py-1 rounded bg-slate-300 w-9">8</output>
+          </fieldset>
+          <fieldset class="flex self-start mb-4">
+            <input type="checkbox" id="incluir_numeros" name="incluir_numeros" checked />
+            <label for="incluir_numeros" class="ml-2 text-lg">Incluir números</label>
+          </fieldset>
+          <fieldset class="flex self-start mb-6 w-full">
+            <input type="checkbox" id="incluir_caracteres_especiais" name="incluir_caracteres_especiais" checked />
+            <label for="incluir_caracteres_especiais" class="ml-2 text-lg">Incluir caracteres especiais</label>
+          </fieldset>
+          <button type="submit"
+            class="text-slate-50 bg-green-700 p-3 rounded w-40 hover:bg-green-800 text-lg font-bold tracking-wider">
+            Gerar
+          </button>
+        </form>
+        {% if senha %}
+        <div class="flex mt-12 justify-evenly w-full items-center px-10">
+          <p class="font-bold text-lg">Senha gerada:</p>
+          <input id="senha" value="{{ senha }}" class="border rounded h-10 px-2 grow ml-4 mr-2" type="password"
+            disabled />
+          <div class="flex items-center">
+            <button class="ml-2 bg-slate-300 rounded h-10 px-3 py-1 hover:bg-slate-400" onclick="showSenha()"
+              aria-label="ver senha">
+              <span id="senha-icon" class="font-emoji">visibility</span>
+            </button>
+            <button class="ml-2 bg-slate-300 rounded h-10 px-3 py-1 hover:bg-slate-400"
+              onclick="copiarParaAreaDeTransferencia()" aria-label="copiar para área de transferência">
+              <span class="font-emoji">content_copy</span>
+            </button>
           </div>
+          {% endif %}
         </div>
-    </div>
-    <div class="column">
-        <h2>Últimas senhas criadas</h2>
-        <button id="buscar-senhas" type="button" onclick="buscarUltimasSenhas()">Buscar últimas senhas</button>
-        <div id="lista-senhas-container" class="lista-senhas-container">
-            <ul id="lista-senhas"></ul>
+      </div>
+    </section>
+    <section class="max-w-3xl ml-auto mr-auto my-14">
+      <div class="flex flex-col items-center bg-slate-50 rounded-lg pb-8 shadow w-full">
+        <div class="bg-emerald-700 w-full rounded-t-lg flex justify-center items-center h-16">
+          <h2 class="font-bold text-2xl text-white">
+            Últimas senhas criadas
+          </h2>
         </div>
-    </div>
+        <button id="buscar-senhas"
+          class="ml-2 bg-slate-300 rounded h-10 px-3 py-1 hover:bg-slate-400 self-end mr-4 mt-4" type="button"
+          aria-label="atualizar" onclick="buscarUltimasSenhas()">
+          <span class="font-emoji">refresh</span>
+        </button>
+        {% include 'lista_senhas.html' %}
+    </section>
+  </main>
+  <footer class="h-32 bg-emerald-700 text-slate-50 w-full flex items-center justify-center">
+    <a href="https://linuxtips.io" target="_blank">Criado com 💙 por LinuxTips</a>
+  </footer>
 </body>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
 </html>

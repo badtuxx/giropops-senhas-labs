@@ -1,0 +1,35 @@
+<div id="lista-senhas-container" class="lista-senhas-container">
+  <ul id="lista-senhas">
+    {% for senha_gerada in senhas_geradas %}
+    <li>
+      <div class="flex mt-12 justify-evenly w-full items-center px-10">
+        <input
+          id="senha-{{senha_gerada['id'] }}"
+          value="{{ senha_gerada['senha'] }}"
+          class="border rounded h-10 px-2 grow ml-4 mr-2"
+          type="password"
+          disabled
+        />
+        <div class="flex items-center">
+          <button
+            class="ml-2 bg-slate-300 rounded h-10 px-3 py-1 hover:bg-slate-400"
+            onclick="showSenhaPorId({{ senha_gerada['id'] }})"
+            aria-label="ver senha"
+          >
+            <span id="senha-icon-{{ senha_gerada['id']}}" class="font-emoji"
+              >visibility</span
+            >
+          </button>
+          <button
+            class="ml-2 bg-slate-300 rounded h-10 px-3 py-1 hover:bg-slate-400"
+            onclick="copiarParaAreaDeTransferenciaPorId({{ senha_gerada['id'] }})"
+            aria-label="copiar para área de transferência"
+          >
+            <span class="font-emoji">content_copy</span>
+          </button>
+        </div>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
