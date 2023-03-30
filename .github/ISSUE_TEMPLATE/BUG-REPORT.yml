@@ -1,5 +1,5 @@
 name: "🐛 Correção de bug"
-description: Crie um novo ticket para um bug.
+description: Criar ticket para corrigir um bug.
 title: "🐛 [BUG] - <título>"
 labels: [
   "bug"
