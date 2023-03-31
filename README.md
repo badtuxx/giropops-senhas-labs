@@ -68,7 +68,14 @@
 
 Esse repositório foi criado com as maravilhosas pessoas que estavam no chat da live da LINUXtips na Twitch.
 
+
+## DEMO
+
+Como ter a stack completa de componentes da nossa solução em 5 minutos.
+
 [![asciicast](https://asciinema.org/a/j1rIYp1VxWMV9P4dTaJtpm0Ei.svg)](https://asciinema.org/a/j1rIYp1VxWMV9P4dTaJtpm0Ei)
+
+&nbsp;
 
 ## Descrição do projeto
 
