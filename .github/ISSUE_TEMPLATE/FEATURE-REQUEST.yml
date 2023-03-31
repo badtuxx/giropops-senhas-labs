@@ -1,0 +1,55 @@
+name: "💡 Nova funcionalidade"
+description: Criar ticket para nova funcionalidade
+title: "💡 [REQUEST] - <título>"
+labels: [
+  "question"
+]
+body:
+  - type: input
+    id: start_date
+    attributes:
+      label: "Data de início"
+      description: Início do desenvolvimento
+      placeholder: "month/day/year"
+    validations:
+      required: false
+  - type: textarea
+    id: implementation_pr
+    attributes:
+      label: "PR de implementação"
+      description: Pull request
+      placeholder: "#Pull Request ID"
+    validations:
+      required: false
+  - type: textarea
+    id: reference_issues
+    attributes:
+      label: "referência Issues"
+      description: Problemas comuns
+      placeholder: "#Issues IDs"
+    validations:
+      required: false
+  - type: textarea
+    id: summary
+    attributes:
+      label: "Resumo"
+      description: Forneça uma breve explicação sobre a nova funcionalidade
+      placeholder: Descreva em poucas linhas sua solicitação de nova funcionalidade
+    validations:
+      required: true
+  - type: textarea
+    id: basic_example
+    attributes:
+      label: "Exemplo Básico"
+      description: Indique aqui alguns exemplos básicos da nova funcionalidade
+      placeholder: Algumas palavras específicas sobre sua solicitação da nova funcionalidade
+    validations:
+      required: true
+  - type: textarea
+    id: drawbacks
+    attributes:
+      label: "Drawbacks"
+      description: Quais são as desvantagens/impactos de sua solicitação de recurso?
+      placeholder: Identifique as desvantagens e impactos enquanto é neutro em sua solicitação de recurso
+    validations:
+      required: true
