@@ -3,6 +3,8 @@ import redis
 import string
 import random
 import os
+from prometheus_client import Counter, start_http_server, generate_latest
+
 
 app = Flask(__name__)
 
@@ -12,7 +14,10 @@ redis_password = ""
 
 r = redis.StrictRedis(host=redis_host, port=redis_port, password=redis_password, decode_responses=True)
 
-def gerar_senha(tamanho, incluir_numeros, incluir_caracteres_especiais):
+senha_gerada_counter = Counter('senha_gerada', 'Contador de senhas geradas')
+
+
+def criar_senha(tamanho, incluir_numeros, incluir_caracteres_especiais):
     caracteres = string.ascii_letters
 
     if incluir_numeros:
@@ -31,10 +36,10 @@ def index():
         tamanho = int(request.form.get('tamanho', 8))
         incluir_numeros = request.form.get('incluir_numeros') == 'on'
         incluir_caracteres_especiais = request.form.get('incluir_caracteres_especiais') == 'on'
-        senha = gerar_senha(tamanho, incluir_numeros, incluir_caracteres_especiais)
+        senha = criar_senha(tamanho, incluir_numeros, incluir_caracteres_especiais)
 
         r.lpush("senhas", senha)
-
+        senha_gerada_counter.inc()
     senhas = r.lrange("senhas", 0, 9)
     if senhas:
         senhas_geradas = [{"id": index + 1, "senha": senha} for index, senha in enumerate(senhas)]
@@ -50,8 +55,9 @@ def gerar_senha_api():
     incluir_numeros = dados.get('incluir_numeros', False)
     incluir_caracteres_especiais = dados.get('incluir_caracteres_especiais', False)
 
-    senha = gerar_senha(tamanho, incluir_numeros, incluir_caracteres_especiais)
+    senha = criar_senha(tamanho, incluir_numeros, incluir_caracteres_especiais)
     r.lpush("senhas", senha)
+    senha_gerada_counter.inc()
 
     return jsonify({"senha": senha})
 
@@ -62,7 +68,12 @@ def listar_senhas():
     resposta = [{"id": index + 1, "senha": senha} for index, senha in enumerate(senhas)]
     return jsonify(resposta)
 
+@app.route('/metrics')
+def metrics():
+    return generate_latest()
+
 if __name__ == '__main__':
     import logging
     logging.basicConfig(filename='error.log', level=logging.DEBUG)
+    start_http_server(8088)
     app.run(debug=True)
