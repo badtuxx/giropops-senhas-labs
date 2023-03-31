@@ -26,6 +26,9 @@ O objetivo do projeto é ter um ambiente completo para que as pessoas possam est
 - Locust
 - Python
 - Flask
+- Prometheus
+- Grafana
+- AlertManager
 
 #### Como estamos usando os componentes
 
