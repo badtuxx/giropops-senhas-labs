@@ -4,7 +4,79 @@ Esse repositório foi criado com as maravilhosas pessoas que estavam no chat da 
 
 ## Descrição do projeto
 
-O projeto em Python com Flask tem como objetivo gerar senhas seguras e aleatórias para uso em diversas situações, incluindo acesso a contas online e sistemas de segurança. Com base em algoritmos de criptografia confiáveis, a aplicação utiliza técnicas de geração de senhas aleatórias para garantir que as senhas criadas sejam difíceis de serem adivinhadas ou descobertas por hackers. Além disso, o projeto tem uma interface simples e amigável para o usuário, permitindo que as senhas sejam geradas com facilidade e rapidez. A utilização do Flask permite que a aplicação seja escalável e customizável de acordo com as necessidades do usuário
+O objetivo do projeto é ter um ambiente completo para que as pessoas possam estudar os seguintes tópicos:
+
+- Micro-serviços
+- Observabilidade
+- Kubernetes
+- GitOps
+- Infra-As-Code
+- Platform Engineering
+- DevOps
+- Desenvolvimento
+
+## Instalando o projeto
+
+### Componentes Utilizados
+
+- Docker
+- Kind
+- ArgoCD
+- Giropops-Senha
+- Locust
+- Python
+- Flask
+
+#### Como estamos usando os componentes
+
+Estamos utilizando o Docker para que seja possível criar um cluster Kubernetes utilizando o Kind. Teremos um cluster Kubernetes com 03 nodes, sendo um control plane e dois workers.
+Estamos utilizando o ArgoCD para que seja possível utilizar GitOps para realizar o deploy de nossas aplicações.
+Até o momento, temos os seguintes serviços:
+
+- Giropops-Senhas que é uma app escrita em Python, onde temos uma API criada em Flask para que seja possível gerar senhas customizadas
+- Redis para que possa armazenar as senhas geradas temporariamente
+
+Estamos usando o Locust para simular carga em nossos serviços.
+
+### Instalando
+
+<<<**ADICIONAR AQUI O VIDEO DE INSTALAÇÃO**>>>
+
+Para fazer a instalação de todos os componentes, basta clonar esse repositório e utilizar o comando make para realizar o deploy de tudo.
+
+```bash
+git clone https://github.com/badtuxx/giropops-senhas.git
+```
+
+Agora acesse o seguinte diretório:
+
+```bash
+cd giropops-senhas
+```
+
+Agora basta utilizar o make para que ela faça o deploy de tudo, desde a criação do cluster até o deploy das nossas apps utilizando o ArgoCD.
+
+```bash
+make all
+```
+
+Pronto, tudo instalado!
+
+Você pode instalar componentes separadamente, por exemplo:
+
+```bash
+make kind
+```
+
+Para limpar e remover tudo o que instalamos:
+
+```bash
+make clean
+```
+
+Pronto!
+Lembrese, estamos ainda no começo do projeto, muito mais componentes serão adicionados.
+
 
 ## Rodar projeto giropops-senhas localhost
 
@@ -41,9 +113,3 @@ Com NodeJS instalado, rodar:\
 Para rodar no modo watch, caso esteja realizando mudanças de estilização\
 `npx tailwindcss -i ./static/css/styles.css -o ./static/css/output.css --watch`
 
-### Tech Stack
-
-- Python
-- Flask
-- Redis
-- Tailwindcss
