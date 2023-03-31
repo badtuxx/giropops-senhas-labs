@@ -122,8 +122,8 @@ clean:
 	@echo "Removendo o Kind..."
 	kind delete cluster --name kind-linuxtips
 	@echo "Kind removido com sucesso!"
-	ifeq ($(OS),macos)
-		@echo "Encerrando o Colima..."
-		colima stop
-		@echo "Colima encerrado com sucesso!"
-	endif
+ifeq ($(OS),Darwin)
+	@echo "Encerrando o Colima..."
+	@colima stop
+	@echo "Colima encerrado com sucesso!"
+endif
