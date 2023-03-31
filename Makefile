@@ -17,7 +17,7 @@ ifeq ($(OS),Linux)
   KIND_COMMAND = curl -Lo ./kind https://kind.sigs.k8s.io/dl/v$(KIND_VERSION)/kind-linux-amd64 && chmod +x ./kind && sudo mv ./kind /usr/local/bin/kind
   KUBECTL_COMMAND = curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl
 else ifeq ($(OS),Darwin)
-  DOCKER_COMMAND = brew install docker
+  DOCKER_COMMAND = brew install docker && brew install colima && colima start
   KIND_COMMAND = brew install kind
   KUBECTL_COMMAND = brew install kubectl
 else
@@ -122,3 +122,8 @@ clean:
 	@echo "Removendo o Kind..."
 	kind delete cluster --name kind-linuxtips
 	@echo "Kind removido com sucesso!"
+	ifeq ($(OS),macos)
+		@echo "Encerrando o Colima..."
+		colima stop
+		@echo "Colima encerrado com sucesso!"
+	endif
