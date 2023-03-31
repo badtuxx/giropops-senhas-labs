@@ -1,0 +1,80 @@
+name: "🐛 Correção de bug"
+description: Criar ticket para corrigir um bug.
+title: "🐛 [BUG] - <título>"
+labels: [
+  "bug"
+]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Descrição"
+      description: Insira uma descrição explícita do seu problema
+      placeholder: Descrição curta e explícita do seu incidente
+    validations:
+      required: true
+  - type: input
+    id: reprod-url
+    attributes:
+      label: "URL de reprodução"
+      description: Insira sua URL do GitHub para fornecer uma reprodução do problema
+      placeholder: ex. https://github.com/USERNAME/REPO-NAME
+    validations:
+      required: true
+  - type: textarea
+    id: reprod
+    attributes:
+      label: "Etapas de reprodução"
+      description: Insira uma descrição explícita do seu problema
+      value: |
+        1. Vá para '...'
+        2. Clique em '....'
+        3. Role para baixo até '....'
+        4. Ver erro
+      render: bash
+    validations:
+      required: true
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: "Capturas de tela"
+      description: Se aplicável, adicione capturas de tela para ajudar a explicar seu problema.
+      value: |
+        ![DESCRIÇÃO](LINK.png)
+      render: bash
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Logs"
+      description: Copie e cole qualquer saída de log relevante. 
+      render: bash
+    validations:
+      required: false
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: "Browsers"
+      description: Em quais navegadores você está vendo o problema?
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
+        - Opera
+    validations:
+      required: false
+  - type: dropdown
+    id: os
+    attributes:
+      label: "OS"
+      description: Qual é o sistema operacional de impacto?
+      multiple: true
+      options:
+        - Windows
+        - Linux
+        - Mac
+    validations:
+      required: false
