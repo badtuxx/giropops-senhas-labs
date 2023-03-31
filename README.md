@@ -98,14 +98,14 @@ O objetivo do projeto é ter um ambiente completo para que as pessoas possam est
 
 #### Como estamos usando os componentes
 
-Estamos utilizando o Docker para que seja possível criar um cluster Kubernetes utilizando o Kind. Teremos um cluster Kubernetes com 03 nodes, sendo um control plane e dois workers.
-Estamos utilizando o ArgoCD para que seja possível utilizar GitOps para realizar o deploy de nossas aplicações.
+Estamos utilizando o **Docker** para que seja possível criar um cluster **Kubernetes** utilizando o **Kind**. Teremos um cluster **Kubernetes** com 03 nodes, sendo um control plane e dois workers.
+Estamos utilizando o **ArgoCD** para que seja possível utilizar **GitOps** para realizar o deploy de nossas aplicações.
 Até o momento, temos os seguintes serviços:
 
-- Giropops-Senhas que é uma app escrita em Python, onde temos uma API criada em Flask para que seja possível gerar senhas customizadas
-- Redis para que possa armazenar as senhas geradas temporariamente
+- **Giropops-Senhas** que é uma app escrita em **Python**, onde temos uma API criada em Flask para que seja possível gerar senhas customizadas
+- **Redis** para que possa armazenar as senhas geradas temporariamente
 
-Estamos usando o Locust para simular carga em nossos serviços.
+Estamos usando o **Locust** para simular carga em nossos serviços.
 
 ### Instalando
 
@@ -117,17 +117,21 @@ Para fazer a instalação de todos os componentes, basta clonar esse repositóri
 git clone https://github.com/badtuxx/giropops-senhas.git
 ```
 
+&nbsp;
 Agora acesse o seguinte diretório:
 
 ```bash
 cd giropops-senhas
 ```
 
+&nbsp;
+
 Agora basta utilizar o make para que ela faça o deploy de tudo, desde a criação do cluster até o deploy das nossas apps utilizando o ArgoCD.
 
 ```bash
 make all
 ```
+&nbsp;
 
 Pronto, tudo instalado!
 
@@ -137,15 +141,19 @@ Você pode instalar componentes separadamente, por exemplo:
 make kind
 ```
 
+&nbsp;
+
 Para limpar e remover tudo o que instalamos:
 
 ```bash
 make clean
 ```
+&nbsp;
 
 Pronto!
 Lembrese, estamos ainda no começo do projeto, muito mais componentes serão adicionados.
 
+&nbsp;
 
 ## Rodar projeto giropops-senhas localhost
 
