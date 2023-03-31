@@ -68,6 +68,8 @@
 
 Esse repositório foi criado com as maravilhosas pessoas que estavam no chat da live da LINUXtips na Twitch.
 
+[![asciicast](https://asciinema.org/a/j1rIYp1VxWMV9P4dTaJtpm0Ei.svg)](https://asciinema.org/a/j1rIYp1VxWMV9P4dTaJtpm0Ei)
+
 ## Descrição do projeto
 
 O objetivo do projeto é ter um ambiente completo para que as pessoas possam estudar os seguintes tópicos:
@@ -108,8 +110,6 @@ Até o momento, temos os seguintes serviços:
 Estamos usando o **Locust** para simular carga em nossos serviços.
 
 ### Instalando
-
-<<<**ADICIONAR AQUI O VIDEO DE INSTALAÇÃO**>>>
 
 Para fazer a instalação de todos os componentes, basta clonar esse repositório e utilizar o comando make para realizar o deploy de tudo.
 
