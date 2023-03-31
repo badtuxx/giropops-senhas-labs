@@ -5,7 +5,7 @@ GIROPOPS_LOCUST_VERSION ?= 1.0
 
 # Tarefas principais
 .PHONY: all
-all: docker kind kubectl kube-prometheus argocd giropops-senhas giropops-locust 
+all: docker kind kubectl kube-prometheus redis argocd giropops-senhas giropops-locust 
 
 # Instalação do Docker
 .PHONY: docker
@@ -70,7 +70,7 @@ argocd:
 giropops-senhas:
 	nohup kubectl port-forward svc/argocd-server -n argocd --address 0.0.0.0 8080:443 &
 	$(eval CLUSTER := $(shell kubectl config current-context))
-	sleep 2
+	sleep 10
 	argocd app create giropops-senhas --repo https://github.com/badtuxx/giropops-senhas.git --path giropops-senhas --dest-name $(CLUSTER) --dest-namespace default
 	argocd app sync giropops-senhas
 	ps -ef | grep -v "ps -ef" | grep kubectl | grep port-forward | grep argocd-server | awk '{print $$2}' | xargs kill
@@ -82,7 +82,7 @@ giropops-senhas:
 giropops-locust:
 	nohup kubectl port-forward svc/argocd-server -n argocd --address 0.0.0.0 8080:443 &
 	$(eval CLUSTER := $(shell kubectl config current-context))
-	sleep 2
+	sleep 10
 	argocd app create giropops-locust --repo https://github.com/badtuxx/giropops-senhas.git --path locust --dest-name $(CLUSTER) --dest-namespace default
 	argocd app sync giropops-locust
 	ps -ef | grep -v "ps -ef" | grep kubectl | grep port-forward | grep argocd-server | awk '{print $$2}' | xargs kill
@@ -99,6 +99,13 @@ kube-prometheus:
 	kubectl create -f kube-prometheus/manifests/
 	rm -rf kube-prometheus
 	@echo "Kube-Prometheus foi instalado com sucesso!"
+
+# Iniciando o Redis
+.PHONY: redis
+redis:
+	@echo "Iniciando o Redis..."
+	kubectl apply -f giropops-senhas/redis-service.yaml
+	@echo "Redis iniciado com sucesso!"
 
 # Removendo o Kind e limpando tudo que foi instalado
 .PHONY: clean
