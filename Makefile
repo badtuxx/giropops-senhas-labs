@@ -8,7 +8,7 @@ OS := $(shell uname -s)
 
 # Tarefas principais
 .PHONY: all
-all: docker kind kubectl argocd giropops-senhas giropops-locust
+all: docker kind kubectl kube-prometheus argocd giropops-senhas giropops-locust 
 
 OS := $(shell uname -s)
 
@@ -92,6 +92,7 @@ giropops-senhas:
 	ps -ef | grep -v "ps -ef" | grep kubectl | grep port-forward | grep argocd-server | awk '{print $$2}' | xargs kill
 	@echo "Giropops-Senhas foi instalado com sucesso!"
 
+
 # Instalando o Giropops-Locust
 .PHONY: giropops-locust
 giropops-locust:
@@ -102,6 +103,18 @@ giropops-locust:
 	argocd app sync giropops-locust
 	ps -ef | grep -v "ps -ef" | grep kubectl | grep port-forward | grep argocd-server | awk '{print $$2}' | xargs kill
 	@echo "Giropops-Locust foi instalado com sucesso!"
+
+# Instalando o Kube-Prometheus
+.PHONY: kube-prometheus
+kube-prometheus:
+	@echo "Instalando o Kube-Prometheus..."
+	git clone https://github.com/prometheus-operator/kube-prometheus
+	cd kube-prometheus
+	kubectl create -f kube-prometheus/manifests/setup
+	sleep 10
+	kubectl create -f kube-prometheus/manifests/
+	rm -rf kube-prometheus
+	@echo "Kube-Prometheus foi instalado com sucesso!"
 
 # Removendo o Kind e limpando tudo que foi instalado
 .PHONY: clean
