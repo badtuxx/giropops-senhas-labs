@@ -35,6 +35,7 @@ docker:
 .PHONY: kind
 kind:
 	@echo "Instalando o Kind..."
+	@command -v kind >/dev/null 2>&1 || $(KIND_COMMAND)
 	@if [ -z "$$(kind get clusters | grep kind-linuxtips)" ]; then kind create cluster --name kind-linuxtips --config kind-config/kind-cluster-3-nodes.yaml; fi
 	@echo "Kind instalado com sucesso!"
 

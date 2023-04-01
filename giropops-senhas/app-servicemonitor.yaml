@@ -2,6 +2,7 @@ apiVersion: monitoring.coreos.com/v1 # versão da API
 kind: ServiceMonitor # tipo de recurso, no caso, um ServiceMonitor do Prometheus Operator
 metadata: # metadados do recurso
   name: giropops-servicemonitor # nome do recurso
+  namespace: monitoring  
   labels: # labels do recurso
     app: giropops-senhas # label que identifica o app
 spec: # especificação do recurso
