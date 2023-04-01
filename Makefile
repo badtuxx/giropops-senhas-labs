@@ -3,32 +3,48 @@ KIND_VERSION ?= 0.14.0
 GIROPOPS_SENHAS_VERSION ?= 1.0
 GIROPOPS_LOCUST_VERSION ?= 1.0
 
+# Definir o sistema operacional
+OS := $(shell uname -s)
+
 # Tarefas principais
 .PHONY: all
 all: docker kind kubectl kube-prometheus argocd giropops-senhas giropops-locust 
+
+OS := $(shell uname -s)
+
+ifeq ($(OS),Linux)
+  DOCKER_COMMAND = sudo curl -fsSL https://get.docker.com | bash
+  KIND_COMMAND = curl -Lo ./kind https://kind.sigs.k8s.io/dl/v$(KIND_VERSION)/kind-linux-amd64 && chmod +x ./kind && sudo mv ./kind /usr/local/bin/kind
+  KUBECTL_COMMAND = curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl
+else ifeq ($(OS),Darwin)
+  DOCKER_COMMAND = brew install docker && brew install colima && colima start
+  KIND_COMMAND = brew install kind
+  KUBECTL_COMMAND = brew install kubectl
+else
+  $(error Unsupported operating system: $(OS))
+endif
 
 # Instalação do Docker
 .PHONY: docker
 docker:
 	@echo "Instalando o Docker..."
-	@command -v docker >/dev/null 2>&1 || sudo curl -fsSL https://get.docker.com | bash
+	@command -v docker >/dev/null 2>&1 || $(DOCKER_COMMAND)
 	@echo "Docker instalado com sucesso!"
 
 # Instalação do Kind
 .PHONY: kind
 kind:
 	@echo "Instalando o Kind..."
-	@command -v kind >/dev/null 2>&1 || (curl -Lo ./kind https://kind.sigs.k8s.io/dl/v$(KIND_VERSION)/kind-linux-amd64 && chmod +x ./kind && sudo mv ./kind /usr/local/bin/kind)
-	@if [ -z "$$(kind get clusters | grep kind-linuxtips)" ]; then kind create cluster --name kind-linuxtips --config kind-config/kind-cluster-3-nodes.yaml; fi
+	@command -v kind >/dev/null 2>&1 || ($(KIND_COMMAND) && kind create cluster --name kind-linuxtips --config kind-config/kind-cluster-3-nodes.yaml)
 	@echo "Kind instalado com sucesso!"
 
 # Instalação do kubectl
 .PHONY: kubectl
 kubectl:
 	@echo "Instalando o kubectl..."
-	@command -v kubectl >/dev/null 2>&1 || (curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl)
-	@kubectl version
+	@command -v kubectl >/dev/null 2>&1 || ($(KUBECTL_COMMAND) && kubectl version)
 	@echo "Kubectl instalado com sucesso!"
+
 
 # Login no ArgoCD
 .PHONY: argo_login
@@ -106,3 +122,8 @@ clean:
 	@echo "Removendo o Kind..."
 	kind delete cluster --name kind-linuxtips
 	@echo "Kind removido com sucesso!"
+ifeq ($(OS),Darwin)
+	@echo "Encerrando o Colima..."
+	@colima stop
+	@echo "Colima encerrado com sucesso!"
+endif
