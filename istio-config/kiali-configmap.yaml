@@ -60,6 +60,8 @@ data:
     external_services:
       prometheus:
         url: http://prometheus-k8s.monitoring.svc.cluster.local:80
+      grafana:
+        url: http://grafana.monitoring.svc.cluster.local:80
       custom_dashboards:
         enabled: true
       istio:
