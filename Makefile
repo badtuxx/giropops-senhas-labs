@@ -1,5 +1,5 @@
 # Versões
-KIND_VERSION ?= 0.14.0
+KIND_VERSION ?= 0.18.0
 GIROPOPS_SENHAS_VERSION ?= 1.0
 GIROPOPS_LOCUST_VERSION ?= 1.0
 
@@ -13,9 +13,9 @@ all: docker kind kubectl metallb kube-prometheus argocd giropops-senhas giropops
 OS := $(shell uname -s)
 
 ifeq ($(OS),Linux)
-  DOCKER_COMMAND = sudo curl -fsSL https://get.docker.com | bash
-  KIND_COMMAND = curl -Lo ./kind https://kind.sigs.k8s.io/dl/v$(KIND_VERSION)/kind-linux-amd64 && chmod +x ./kind && sudo mv ./kind /usr/local/bin/kind
-  KUBECTL_COMMAND = curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl
+  DOCKER_COMMAND = "sudo curl -fsSL https://get.docker.com | bash"
+  KIND_COMMAND = "curl -Lo ./kind https://kind.sigs.k8s.io/dl/v$(KIND_VERSION)/kind-linux-amd64 && chmod +x ./kind && sudo mv ./kind /usr/local/bin/kind"
+  KUBECTL_COMMAND = "curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl"
 else ifeq ($(OS),Darwin)
   DOCKER_COMMAND = brew install docker && brew install colima && colima start
   KIND_COMMAND = brew install kind
@@ -113,8 +113,10 @@ kube-prometheus:
 	git clone https://github.com/prometheus-operator/kube-prometheus
 	cd kube-prometheus
 	kubectl create -f kube-prometheus/manifests/setup
-	sleep 10
+	until kubectl get servicemonitors; sleep 1; done
 	kubectl create -f kube-prometheus/manifests/
+	kubectl wait --for=condition=ready --timeout=300s pod -l app.kubernetes.io/part-of=kube-prometheus -n monitoring
+	kubectl apply -f prometheus-config/
 	rm -rf kube-prometheus
 	@echo "Kube-Prometheus foi instalado com sucesso!"
 

@@ -12,4 +12,4 @@ spec: # especificação do recurso
   endpoints: # endpoints que serão monitorados
     - interval: 10s # intervalo de tempo entre as requisições
       path: /metrics # caminho para a requisição
-      targetPort: 80 # porta do target
+      port: app # porta do target
