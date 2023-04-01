@@ -105,6 +105,8 @@ O objetivo do projeto é ter um ambiente completo para que as pessoas possam est
 - Grafana
 - AlertManager
 - MetalLB
+- Istio
+- Kiali
 
 #### Como estamos usando os componentes
 
@@ -118,6 +120,8 @@ Até o momento, temos os seguintes serviços:
 Estamos usando o **Locust** para simular carga em nossos serviços.
 
 Estamos utilizando o **MetalLB** para que seja possível expor nossos serviços para o mundo externo, sendo uma alternativa para criação de LoadBalancer no **Kubernetes**.
+
+Temos o **Istio** para que seja possível realizar o **Service Mesh** em nossos serviços e o **Kiali** para visualizar o tráfego entre os serviços.
 
 ### Instalando
 

@@ -8,12 +8,12 @@ OS := $(shell uname -s)
 
 # Tarefas principais
 .PHONY: all
-all: docker kind kubectl metallb kube-prometheus argocd giropops-senhas giropops-locust 
+all: docker kind kubectl metallb kube-prometheus istio kiali argocd giropops-senhas giropops-locust 
 
 OS := $(shell uname -s)
 
 ifeq ($(OS),Linux)
-  DOCKER_COMMAND = "sudo curl -fsSL https://get.docker.com | bash"
+  DOCKER_COMMAND = "sudo curl -fsSL https://get.docker.com | bash"s
   KIND_COMMAND = "curl -Lo ./kind https://kind.sigs.k8s.io/dl/v$(KIND_VERSION)/kind-linux-amd64 && chmod +x ./kind && sudo mv ./kind /usr/local/bin/kind"
   KUBECTL_COMMAND = "curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl"
 else ifeq ($(OS),Darwin)
@@ -80,6 +80,8 @@ argocd:
 	$(MAKE) argo_login
 	$(MAKE) add_cluster
 	ps -ef | grep -v "ps -ef" | grep kubectl | grep port-forward | grep argocd-server | awk '{print $$2}' | xargs kill
+	kubectl label namespace default istio-injection=enabled
+	kubectl label namespace argocd istio-injection=enabled
 	@echo "ArgoCD foi instalado com sucesso!"
 
 
@@ -113,11 +115,12 @@ kube-prometheus:
 	git clone https://github.com/prometheus-operator/kube-prometheus
 	cd kube-prometheus
 	kubectl create -f kube-prometheus/manifests/setup
-	until kubectl get servicemonitors; sleep 1; done
+	until kubectl get servicemonitors; do sleep 1; done
 	kubectl create -f kube-prometheus/manifests/
 	kubectl wait --for=condition=ready --timeout=300s pod -l app.kubernetes.io/part-of=kube-prometheus -n monitoring
 	kubectl apply -f prometheus-config/
 	rm -rf kube-prometheus
+	kubectl label namespace monitoring istio-injection=enabled
 	@echo "Kube-Prometheus foi instalado com sucesso!"
 
 # Instalando o MetalLB
@@ -129,6 +132,29 @@ metallb:
 	kubectl apply -f metallb-config/metallb-config.yaml
 	@echo "MetalLB foi instalado com sucesso!"
 
+
+# Instalando o Istio
+.PHONY: istio
+istio:
+	@echo "Instalando o Istio..."
+	curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.17.1 TARGET_ARCH=x86_64 sh -
+	cd istio-1.17.1
+	export PATH=$$PWD/bin:$$PATH
+	istioctl install --set profile=default -y
+	kubectl label namespace default istio-injection=enabled
+	kubectl wait --for=condition=ready --timeout=300s pod -l app=istiod -n istio-system
+	rm -rf istio-1.17.1
+	@echo "Istio foi instalado com sucesso!"
+
+# Instalando o Kiali
+.PHONY: kiali
+kiali: 
+	@echo "Instalando o Kiali..."
+	kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.17/samples/addons/kiali.yaml
+	kubectl wait --for=condition=ready --timeout=300s pod -l app=kiali -n istio-system
+	kubectl apply -f istio-config/
+	kubectl rollout restart deployment kiali -n istio-system
+	@echo "Kiali foi instalado com sucesso!"
 
 # Removendo o Kind e limpando tudo que foi instalado
 .PHONY: clean

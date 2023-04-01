@@ -13,14 +13,14 @@ spec:
   internalTrafficPolicy: Cluster
   ipFamilyPolicy: SingleStack
   ports:
-  - name: web
-    port: 9090
+  - name: web-prometheus
+    port: 80
     protocol: TCP
-    targetPort: web
+    targetPort: 9090
   - name: reloader-web
     port: 8080
     protocol: TCP
-    targetPort: reloader-web
+    targetPort: 8080
   selector:
     app.kubernetes.io/component: prometheus
     app.kubernetes.io/instance: k8s

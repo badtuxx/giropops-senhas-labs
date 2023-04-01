@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: kiali
+    app.kubernetes.io/instance: kiali
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: kiali
+    app.kubernetes.io/part-of: kiali
+    app.kubernetes.io/version: v1.63.1
+    helm.sh/chart: kiali-server-1.63.1
+    version: v1.63.1
+  name: kiali
+  namespace: istio-system
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilyPolicy: SingleStack
+  ports:
+  - appProtocol: http
+    name: http
+    port: 80
+    protocol: TCP
+    targetPort: 20001
+  - appProtocol: http
+    name: http-metrics
+    port: 9090
+    protocol: TCP
+    targetPort: 9090
+  selector:
+    app.kubernetes.io/instance: kiali
+    app.kubernetes.io/name: kiali
+  type: LoadBalancer
