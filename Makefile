@@ -100,6 +100,16 @@ kube-prometheus:
 	rm -rf kube-prometheus
 	@echo "Kube-Prometheus foi instalado com sucesso!"
 
+# Instalando o MetalLB
+.PHONY: metallb
+metallb:
+	@echo "Instalando o MetalLB..."
+	kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml
+	kubectl wait --for=condition=ready --timeout=300s pod -l app=metallb -n metallb-system
+	kubectl apply -f metallb-config/metallb-config.yaml
+	@echo "MetalLB foi instalado com sucesso!"
+
+
 # Removendo o Kind e limpando tudo que foi instalado
 .PHONY: clean
 clean:
