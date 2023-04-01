@@ -11,4 +11,4 @@ spec: # especificação do recurso
   endpoints: # endpoints que serão monitorados
     - interval: 10s # intervalo de tempo entre as requisições
       path: /metrics # caminho para a requisição
-      port: app # porta do target
+      port: tcp-app # porta do target
