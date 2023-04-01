@@ -104,6 +104,7 @@ O objetivo do projeto é ter um ambiente completo para que as pessoas possam est
 - Prometheus
 - Grafana
 - AlertManager
+- MetalLB
 
 #### Como estamos usando os componentes
 
@@ -115,6 +116,8 @@ Até o momento, temos os seguintes serviços:
 - **Redis** para que possa armazenar as senhas geradas temporariamente
 
 Estamos usando o **Locust** para simular carga em nossos serviços.
+
+Estamos utilizando o **MetalLB** para que seja possível expor nossos serviços para o mundo externo, sendo uma alternativa para criação de LoadBalancer no **Kubernetes**.
 
 ### Instalando
 

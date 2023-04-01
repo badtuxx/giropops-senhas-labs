@@ -8,7 +8,7 @@ OS := $(shell uname -s)
 
 # Tarefas principais
 .PHONY: all
-all: docker kind kubectl kube-prometheus argocd giropops-senhas giropops-locust 
+all: docker kind kubectl metallb kube-prometheus argocd giropops-senhas giropops-locust 
 
 OS := $(shell uname -s)
 
@@ -35,7 +35,7 @@ docker:
 .PHONY: kind
 kind:
 	@echo "Instalando o Kind..."
-	@command -v kind >/dev/null 2>&1 || ($(KIND_COMMAND) && kind create cluster --name kind-linuxtips --config kind-config/kind-cluster-3-nodes.yaml)
+	@if [ -z "$$(kind get clusters | grep kind-linuxtips)" ]; then kind create cluster --name kind-linuxtips --config kind-config/kind-cluster-3-nodes.yaml; fi
 	@echo "Kind instalado com sucesso!"
 
 # Instalação do kubectl
@@ -80,6 +80,7 @@ argocd:
 	$(MAKE) add_cluster
 	ps -ef | grep -v "ps -ef" | grep kubectl | grep port-forward | grep argocd-server | awk '{print $$2}' | xargs kill
 	@echo "ArgoCD foi instalado com sucesso!"
+
 
 # Instalando o Giropops-Senhas
 .PHONY: giropops-senhas
