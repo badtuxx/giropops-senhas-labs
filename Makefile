@@ -59,12 +59,6 @@ add_cluster:
 	$(eval PORT_ENDPOINT := $(shell kubectl get endpoints kubernetes -o jsonpath='{.subsets[0].ports[0].port}'))
 	$(eval IP_K8S_IP := $(shell kubectl cluster-info | awk '{print $$7}' | head -n 1 | sed 's/\x1b\[[0-9;]*m//g' | sed 's/https:\/\///g'))
 	@sed -i "s/https:\/\/$(IP_K8S_IP)/https:\/\/$(IP_K8S_API_ENDPOINT):6443/g" ~/.kube/config
-# Debug
-	@echo "IP_K8S_API_ENDPOINT: ${IP_K8S_API_ENDPOINT}"
-	@echo "CLUSTER: ${CLUSTER}"
-	@echo "PORT_ENDPOINT: ${PORT_ENDPOINT}"
-	@echo "IP_K8S_IP: ${IP_K8S_IP}"
-# End Debug
 	argocd cluster add --insecure -y $(CLUSTER)
 	@echo "Cluster adicionado com sucesso!"
 
@@ -73,9 +67,11 @@ add_cluster:
 argocd:
 	@echo "Instalando o ArgoCD e o Giropops-Senhas..."
 	if [ -z "$$(kubectl get namespace argocd)" ]; then kubectl create namespace argocd; fi
-	$(ARGOCD_COMMAND)
 	kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-	kubectl wait --for=condition=ready --timeout=10m pod -l app.kubernetes.io/name=argocd-server -n argocd
+	curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+	sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+	rm argocd-linux-amd64
+	kubectl wait --for=condition=ready --timeout=300s pod -l app.kubernetes.io/name=argocd-server -n argocd
 	$(MAKE) argo_login
 	$(MAKE) add_cluster
 	ps -ef | grep -v "ps -ef" | grep kubectl | grep port-forward | grep argocd-server | awk '{print $$2}' | xargs kill
