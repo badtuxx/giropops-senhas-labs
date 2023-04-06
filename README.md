@@ -107,6 +107,7 @@ O objetivo do projeto é ter um ambiente completo para que as pessoas possam est
 - MetalLB
 - Istio
 - Kiali
+- Chaos Mesh
 
 #### Como estamos usando os componentes
 
@@ -122,6 +123,8 @@ Estamos usando o **Locust** para simular carga em nossos serviços.
 Estamos utilizando o **MetalLB** para que seja possível expor nossos serviços para o mundo externo, sendo uma alternativa para criação de LoadBalancer no **Kubernetes**.
 
 Temos o **Istio** para que seja possível realizar o **Service Mesh** em nossos serviços e o **Kiali** para visualizar o tráfego entre os serviços.
+
+E para realizar os testes de caos e assim testar a resiliencia de nossa infra e de nossa apps, estamos utilizando o sensacional Chaos Mesh. Ele é um operator e possui uma excelente UI para que possamos criar e visualizar como estão os nossos chaos tests.
 
 ### Instalando
 
