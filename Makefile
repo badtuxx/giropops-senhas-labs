@@ -8,7 +8,7 @@ OS := $(shell uname -s)
 
 # Tarefas principais
 .PHONY: all
-all: docker kind kubectl metallb kube-prometheus istio kiali argocd giropops-senhas giropops-locust 
+all: docker kind kubectl metallb kube-prometheus istio kiali argocd giropops-senhas giropops-locust chaos-mesh
 
 OS := $(shell uname -s)
 
@@ -36,7 +36,7 @@ docker:
 kind:
 	@echo "Instalando o Kind..."
 	@command -v kind >/dev/null 2>&1 || $(KIND_COMMAND)
-	@if [ -z "$$(kind get clusters | grep kind-linuxtips)" ]; then kind create cluster --name kind-linuxtips --config kind-config/kind-cluster-3-nodes.yaml; fi
+	@if [ -z "$$(kind get clusters | grep kind-linuxtips)" ]; then kind create cluster --name kind-linuxtips --image kindest/node:v1.26.3 --config kind-config/kind-cluster-3-nodes.yaml; fi
 	@echo "Kind instalado com sucesso!"
 
 # Instalação do kubectl
@@ -138,9 +138,8 @@ metallb:
 istio:
 	@echo "Instalando o Istio..."
 	curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.17.1 TARGET_ARCH=x86_64 sh -
-	cd istio-1.17.1
-	export PATH=$$PWD/bin:$$PATH
-	istioctl install --set profile=default -y
+	sleep 2
+	./istio-1.17.1/bin/istioctl install --set profile=default -y
 	kubectl label namespace default istio-injection=enabled
 	kubectl wait --for=condition=ready --timeout=300s pod -l app=istiod -n istio-system
 	rm -rf istio-1.17.1
@@ -155,6 +154,14 @@ kiali:
 	kubectl apply -f istio-config/
 	kubectl rollout restart deployment kiali -n istio-system
 	@echo "Kiali foi instalado com sucesso!"
+	
+# Instalando o Chaos Mesh
+.PHONY: chaos-mesh
+chaos-mesh:
+	@echo "Instalando o Chaos Mesh Operator"
+	curl -fsSL https://mirrors.chaos-mesh.org/v2.5.1/install.sh | bash -s -- --local kind --name kind-linuxtips
+	sleep 3
+	@echo "Chaos Mesh instalado com sucesso!"
 
 # Removendo o Kind e limpando tudo que foi instalado
 .PHONY: clean

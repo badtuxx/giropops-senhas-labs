@@ -1,0 +1,17 @@
+kind: NetworkChaos
+apiVersion: chaos-mesh.org/v1alpha1
+metadata:
+  namespace: default
+  name: falha-network-loss
+spec:
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: redis
+  mode: all
+  action: loss
+  loss:
+    loss: '50'
+    correlation: '0'
+  direction: to
