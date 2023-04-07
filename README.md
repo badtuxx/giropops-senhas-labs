@@ -108,6 +108,7 @@ O objetivo do projeto é ter um ambiente completo para que as pessoas possam est
 - Istio
 - Kiali
 - Chaos Mesh
+- Kubernetes-Dashboard
 
 #### Como estamos usando os componentes
 
@@ -125,6 +126,14 @@ Estamos utilizando o **MetalLB** para que seja possível expor nossos serviços 
 Temos o **Istio** para que seja possível realizar o **Service Mesh** em nossos serviços e o **Kiali** para visualizar o tráfego entre os serviços.
 
 E para realizar os testes de caos e assim testar a resiliencia de nossa infra e de nossa apps, estamos utilizando o sensacional Chaos Mesh. Ele é um operator e possui uma excelente UI para que possamos criar e visualizar como estão os nossos chaos tests.
+
+Para que seja possível visualizar todos os detalhes sobre o nosso cluster, estamos utilizando o **Kubernetes Dashboard**.
+
+Após a instalação de todos os componentes, é necessário gerar um token para ter acesso ao dashboard. Para isso, basta executar o seguinte comando:
+
+```bash
+make dashboard-token
+```
 
 ### Instalando
 
@@ -156,6 +165,14 @@ Você pode instalar componentes separadamente, por exemplo:
 
 ```bash
 make kind
+```
+
+&nbsp;
+
+Após a instalação de todos os componentes, é necessário gerar um token para ter acesso ao dashboard. Para isso, basta executar o seguinte comando:
+
+```bash
+make dashboard-token
 ```
 
 &nbsp;
