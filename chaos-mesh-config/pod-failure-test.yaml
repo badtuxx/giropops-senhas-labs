@@ -1,0 +1,13 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: PodChaos
+metadata:
+  namespace: default
+  name: falha-pod
+spec:
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: redis
+  mode: all
+  action: pod-failure

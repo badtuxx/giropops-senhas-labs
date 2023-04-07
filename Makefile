@@ -7,7 +7,7 @@ ISTIO_VERSION ?= 1.17.1
 
 # Tarefas principais
 .PHONY: all
-all: docker kind kubectl metallb kube-prometheus istio kiali argocd giropops-senhas giropops-locust chaos-mesh
+all: docker kind kubectl metallb kube-prometheus istio kiali argocd giropops-senhas giropops-locust chaos-mesh kubernetes-dashboard
 
 DOCKER_COMMAND = sudo curl -fsSL https://get.docker.com | bash
 KIND_COMMAND = "curl -Lo ./kind https://kind.sigs.k8s.io/dl/v$(KIND_VERSION)/kind-linux-amd64 && chmod +x ./kind && sudo mv ./kind /usr/local/bin/kind"
@@ -155,6 +155,24 @@ chaos-mesh:
 	curl -fsSL https://mirrors.chaos-mesh.org/v2.5.1/install.sh | bash -s -- --local kind --name kind-linuxtips
 	sleep 3
 	@echo "Chaos Mesh instalado com sucesso!"
+
+# Instalando o Kubernetes Dashboard
+.PHONY: kubernetes-dashboard
+kubernetes-dashboard:
+	@echo "Instalando o Kubernetes Dashboard..."
+	kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+	kubectl wait --for=condition=ready --timeout=300s pod -l k8s-app=kubernetes-dashboard -n kubernetes-dashboard
+	kubectl apply -f dash-config/
+	@echo "Kubernetes Dashboard instalado com sucesso!"
+	@echo "Para criar o token de acesso ao Dashboard, execute o comando: make dashboard_token"
+
+# Criando o token de acesso ao Kubernetes Dashboard
+.PHONY: dashboard-token
+dashboard-token:
+	@echo "Criando o token de acesso ao Kubernetes Dashboard..."
+	kubectl -n kubernetes-dashboard create token admin-user
+	kubectl wait --for=condition=ready --timeout=300s pod -l k8s-app=kubernetes-dashboard -n kubernetes-dashboard
+	@echo "Token criado com sucesso!"
 
 # Removendo o Kind e limpando tudo que foi instalado
 .PHONY: clean
