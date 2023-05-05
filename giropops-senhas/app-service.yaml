@@ -9,7 +9,8 @@ spec:
     app: giropops-senhas
   ports:
     - protocol: TCP
-      port: 80
+      port: 5000
+      nodePort: 33500
       targetPort: 5000
       name: tcp-app
-  type: LoadBalancer
+  type: Lo
