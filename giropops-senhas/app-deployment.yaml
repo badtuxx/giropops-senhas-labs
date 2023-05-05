@@ -5,7 +5,7 @@ metadata:
     app: giropops-senhas
   name: giropops-senhas
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: giropops-senhas
@@ -20,10 +20,3 @@ spec:
         ports:
         - containerPort: 5000
         imagePullPolicy: Always
-        resources:
-          limits:
-            memory: "256Mi"
-            cpu: "500m"
-          requests:
-            memory: "128Mi"
-            cpu: "250m"
