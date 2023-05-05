@@ -13,4 +13,4 @@ spec:
       nodePort: 33500
       targetPort: 5000
       name: tcp-app
-  type: Lo
+  type: NodePort
