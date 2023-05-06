@@ -16,10 +16,12 @@ ifeq ($(OS),Linux)
   DOCKER_COMMAND = "sudo curl -fsSL https://get.docker.com | bash"s
   KIND_COMMAND = "curl -Lo ./kind https://kind.sigs.k8s.io/dl/v$(KIND_VERSION)/kind-linux-amd64 && chmod +x ./kind && sudo mv ./kind /usr/local/bin/kind"
   KUBECTL_COMMAND = "curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl"
+  CLUSTERADD_COMMAND = argocd cluster add --insecure -y
 else ifeq ($(OS),Darwin)
   DOCKER_COMMAND = brew install docker && brew install colima && colima start
   KIND_COMMAND = brew install kind
   KUBECTL_COMMAND = brew install kubectl
+  CLUSTERADD_COMMAND = argocd cluster add --insecure -y --in-cluster
 else
   $(error Unsupported operating system: $(OS))
 endif
@@ -64,7 +66,7 @@ add_cluster:
 	$(eval PORT_ENDPOINT := $(shell kubectl get endpoints kubernetes -o jsonpath='{.subsets[0].ports[0].port}'))
 	$(eval IP_K8S_IP := $(shell kubectl cluster-info | awk '{print $$7}' | head -n 1 | sed 's/\x1b\[[0-9;]*m//g' | sed 's/https:\/\///g'))
 	@sed -i "s/https:\/\/$(IP_K8S_IP)/https:\/\/$(IP_K8S_API_ENDPOINT):6443/g" ~/.kube/config
-	argocd cluster add --insecure -y $(CLUSTER)
+	$(CLUSTERADD_COMMAND $(CLUSTER)) 
 	@echo "Cluster adicionado com sucesso!"
 
 # Instalando e configurando o ArgoCD
