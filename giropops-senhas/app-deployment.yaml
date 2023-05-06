@@ -5,7 +5,7 @@ metadata:
     app: giropops-senhas
   name: giropops-senhas
 spec:
-  replicas: 4
+  replicas: 2
   selector:
     matchLabels:
       app: giropops-senhas
